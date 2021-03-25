@@ -1,6 +1,8 @@
 import numpy as np
-from scipy import misc
+import imageio
 import glob
+
+# Small modification: added absolute path of Test and Train folders
 
 def load_mnist():
     # Loads the MNIST dataset from png images
@@ -9,24 +11,24 @@ def load_mnist():
     # create list of image objects
     test_images = []
     test_labels = []    
-    
+
     for label in range(NUM_LABELS):
-        for image_path in glob.glob("MNIST/Test/" + str(label) + "/*.png"):
-            image = misc.imread(image_path)
+        for image_path in glob.glob("/Users/tongyou/Desktop/Deep-learning-course/Assignment-1/MNIST/Test/" + str(label) + "/*.png"): 
+            image = imageio.imread(image_path) 
             test_images.append(image)
-            letter = [0 for _ in range(0,NUM_LABELS)]    
+            letter = [0 for _ in range(0,NUM_LABELS)] 
             letter[label] = 1
             test_labels.append(letter)  
             
     # create list of image objects
-    train_images = []
-    train_labels = []    
+    train_images = [] 
+    train_labels = [] 
     
     for label in range(NUM_LABELS):
-        for image_path in glob.glob("MNIST/Train/" + str(label) + "/*.png"):
-            image = misc.imread(image_path)
+        for image_path in glob.glob("/Users/tongyou/Desktop/Deep-learning-course/Assignment-1/MNIST/Train/" + str(label) + "/*.png"): 
+            image = imageio.imread(image_path)
             train_images.append(image)
-            letter = [0 for _ in range(0,NUM_LABELS)]    
+            letter = [0 for _ in range(0,NUM_LABELS)] 
             letter[label] = 1
             train_labels.append(letter)                  
             

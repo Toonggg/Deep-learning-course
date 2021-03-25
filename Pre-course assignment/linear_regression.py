@@ -43,8 +43,8 @@ def gradient_descent(xtrain, ytrain, learning_rate, maxit):
         w = w - learning_rate * dJdw 
         b = b - learning_rate * dJdb 
         
-        nw = np.sqrt(np.linalg.norm(w - wp))
-        nb = np.sqrt(np.linalg.norm(b - bp))
+        nw = np.sqrt(np.linalg.norm(w - wp)) 
+        nb = np.sqrt(np.linalg.norm(b - bp)) 
 
         it += 1 
         J.append((1/n) * np.sum((ytrain -  zi) ** 2)) 
