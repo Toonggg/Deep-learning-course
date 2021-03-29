@@ -1,5 +1,6 @@
 from load_auto import load_auto 
 from matplotlib import pyplot as plt 
+from numba import jit
 import numpy as np 
 
 xtrain_all, xtrain_horsepower, ytrain = load_auto() 

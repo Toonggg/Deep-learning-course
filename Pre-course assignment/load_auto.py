@@ -4,7 +4,7 @@ import pandas as pd
 def load_auto():
 
 	# import data
-	Auto = pd.read_csv('/Users/tongyou/Desktop/Deep learning course/Auto.csv', na_values='?', dtype={'ID': str}).dropna().reset_index() 
+	Auto = pd.read_csv('/Users/tongyou/Desktop/Deep-learning-course/Pre-course assignment/Auto.csv', na_values='?', dtype={'ID': str}).dropna().reset_index() 
 
 	# Extract relevant data features
 	X_train = Auto[['cylinders','displacement','horsepower','weight', 'acceleration','year','origin']].values
