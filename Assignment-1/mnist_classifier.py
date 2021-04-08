@@ -14,21 +14,33 @@ p = x_train.shape[1] # number of input pixels - 784 (flattened 28x28 image)
 
 def gradient_descent(xtrain, ytrain, lr, maxit): 
 
-    w_mj = np.random.normal(size = (M, p)) # weight matrix                                                                                                                                                                                                                        
+    w_mj = np.random.normal(size = (M, p)) # weight matrix                                                                                                                                                                                                                      
     b_m = np.zeros(shape = (1, M)) # offset vector 
-    z_im = np.zeros(shape = (n, M)) # model 
+    z_im = np.zeros(shape = (n, M)) # model in (n x M) 
 
-    J = np.zeros(shape = (1, maxit)) # cost vector  
+    J = np.zeros(shape = (1, maxit)) # cost vector 
 
     it = 0 
 
-    while it != maxit: 
-        for m in range(0, M):
-            for j in range(0, p):
-                z_im[:, m] = np.sum(w_mj[m, j] * xtrain[:, j]) + b_m[m]
- 
+    while it != maxit:
+    
+        z_im = xtrain@w_mj.T + b_m 
+
+        dJdzim = 
+
+        dJdbm = (1/n) * np.sum(dJdzim, axis = 0)
+        dJdwmj = (1/n) * (dJzim.T@xtrain) 
+        
+        b_m = b_m - lr * dJdbm
+        w_mj = w_mj - lr * dJdwmj
+        
+        J[it] = it 
 
         it += 1
+
+    print(z_im.shape)
+    print(dJdbm.shape)
+    print(dJdwmj.shape)
 
     return J, it, w_mj, b_m , z_im
 
