@@ -57,7 +57,7 @@ plt.figure(1)
 plt.plot(np.arange(0,it_all), J_all, 'r--') 
 plt.annotate("Final cost J: "+str(J_all[len(J_all) - 1]), xy = (150,300))
 plt.annotate("Iterations: "+str(it_all), xy = (150,250))
-plt.xlabel('Number of iterations')
+plt.xlabel('Number of iterations') 
 plt.ylabel('Cost J') 
 
 J_hp , it_hp, w_hp, b_hp, z_hp = gradient_descent(xtn_hp, ytrain, 0.03, maxit = 800) 

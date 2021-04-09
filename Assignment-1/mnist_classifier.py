@@ -1,8 +1,6 @@
 import numpy as np 
-from numba import jit 
 from load_mnist import load_mnist 
 from matplotlib import pyplot as plt 
-from matplotlib.colors import LogNorm
 
 x_train, y_train, x_test, y_test = load_mnist()
 
@@ -29,67 +27,52 @@ def gradient_descent(xtrain, ytrain, lr, maxit):
     while it != maxit:
     
         z_im = xtrain @ w_mj.T + b_m 
-        #y_im = np.eye(n, M)
 
-        y_im = ytrain
+        y_im = ytrain 
 
         z_im_norm = z_im - np.max(z_im, axis = 1, keepdims = True) 
 
         p_im = np.exp(z_im_norm) / np.sum(np.exp(z_im_norm), axis = 1, keepdims = True) 
 
         dJdzim = (1/n) * (y_im * p_im - y_im) 
-        
-        #print(dJdzim) 
 
         dJdbm = np.sum(dJdzim, axis = 0) 
         dJdwmj = dJdzim.T @ xtrain 
-
-        #dJdbm = (1/n) * np.sum((y_im * (p_im - 1)), axis = 0) 
-        #dJdwmj = (1/n) * ((y_im * (p_im - 1)).T @ xtrain) 
-
-        #dJdbm = (1/n) * np.sum(np.sum((y_im * p_im - y_im), axis = 0, keepdims = True), axis = 1 , keepdims = True)
-        #dJdwmj = (1/n) * np.sum(((y_im * p_im).T @ xtrain - y_im.T @ xtrain), axis = 1, keepdims = True)
         
         b_m = b_m - lr * dJdbm 
         w_mj = w_mj - lr * dJdwmj 
         
         L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
         J[it] = (1/n) * np.sum(L_i) 
+        it += 1 
 
-        it += 1
+    return J, it, w_mj, b_m , z_im 
 
-    #print(z_im_norm) 
-    #print(p_im) 
-    #print("p_im: ", p_im.shape)
-    #print("z_im: ", z_im.shape) 
-    #print("z_im_norm: ", z_im_norm.shape) 
-    #print("dJdbm: ", dJdbm.shape) 
-    #print("dJdwmj: ", dJdwmj.shape) 
+J, it, wmj, bm, zim = gradient_descent(x_train, y_train, 0.1, 300) 
 
-    return J, it, w_mj, b_m , z_im
-
-J, it, wmj, bm, zim = gradient_descent(x_train, y_train, 0.05, 500) 
-
+plt.figure(1)
 plt.plot(J) 
 
-fig2, ax2 = plt.subplots(2, 5, figsize = (10,10)) 
-ax2[0,0].imshow(wmj[0, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+figw, axw = plt.subplots(2, 5, figsize = (10,10)) 
 
-ax2[0,1].imshow(wmj[1, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[0,0].imshow(wmj[0, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
 
-ax2[0,2].imshow(wmj[2, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[0,1].imshow(wmj[1, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
 
-ax2[0,3].imshow(wmj[3, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[0,2].imshow(wmj[2, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
 
-ax2[0,4].imshow(wmj[4, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[0,3].imshow(wmj[3, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
 
-ax2[1,0].imshow(wmj[5, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[0,4].imshow(wmj[4, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
 
-ax2[1,1].imshow(wmj[6, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[1,0].imshow(wmj[5, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
 
-ax2[1,2].imshow(wmj[7, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[1,1].imshow(wmj[6, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
 
-ax2[1,3].imshow(wmj[8, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[1,2].imshow(wmj[7, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
 
-ax2[1,4].imshow(wmj[9, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[1,3].imshow(wmj[8, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+
+axw[1,4].imshow(wmj[9, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+
 plt.show() 
