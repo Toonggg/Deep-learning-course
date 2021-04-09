@@ -73,5 +73,5 @@ plt.scatter(xtn_hp, ytrain, marker = "x", c = "blue")
 plt.plot(xtn_hp, z_hp, 'r') 
 plt.legend(["Linear regression", "Horsepower data"])
 plt.xlabel('Normalized horsepower')
-plt.ylabel('MPG '); 
+plt.ylabel('MPG ')
 plt.show()
