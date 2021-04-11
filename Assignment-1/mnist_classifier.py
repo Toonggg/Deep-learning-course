@@ -13,14 +13,6 @@ M = 10
 n = x_train.shape[0] # number of training examples - 60000 
 p = x_train.shape[1] # number of input pixels - 784 (flattened 28x28 image) 
 
-n_batch = 30 # batch size 
-ind = np.arange(n)
-np.random.shuffle(ind) # shuffle indices 
-xt_shuff = x_train[ind, :]
-yt_shuff = y_train[ind, :]
-
-epochs = 1 # number of passes 
-
 def gradient_descent(xtrain, ytrain, lr, maxit): 
 
     #w_mj = np.random.normal(size = (M, p)) # weight matrix 
@@ -33,9 +25,7 @@ def gradient_descent(xtrain, ytrain, lr, maxit):
     J = np.zeros(shape = (maxit, 1)) # cost vector 
     c_acc = np.zeros(shape = (maxit, 1)) # classifcation accuracy 
 
-    for e in range(0, epochs): 
-
-        it = 0 
+    it = 0 
     
         while it != maxit:
                 z_im = xtrain @ w_mj.T + b_m 
@@ -67,7 +57,7 @@ def gradient_descent(xtrain, ytrain, lr, maxit):
 J, c_acc, it, wmj, bm, zim, pim = gradient_descent(x_train, y_train, 0.05, 2000) 
 
 plt.figure(1)
-plt.plot(J)
+plt.plot(J) 
 
 plt.figure(2)
 plt.plot(c_acc) 
