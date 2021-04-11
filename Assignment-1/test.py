@@ -27,7 +27,7 @@ def gradient_descent(xtrain, ytrain):
 
     lr0 = 0.1
     lrt = 0.05
-    tau = 100  
+    tau = 2000 
 
     for e in range(0, epochs): 
 
@@ -59,12 +59,12 @@ def gradient_descent(xtrain, ytrain):
 
                 p_im = np.exp(z_im_norm) / np.sum(np.exp(z_im_norm), axis = 1, keepdims = True) 
 
-                dJdzim = (1/n_batch) * (y_im * p_im - y_im) 
+                dJdzim = (y_im * p_im - y_im) 
                 dJdbm = np.sum(dJdzim, axis = 0) 
                 dJdwmj = dJdzim.T @ xt[mini_batch, :] 
                 
-                b_m = b_m - lr * dJdbm 
-                w_mj = w_mj - lr * dJdwmj 
+                b_m = b_m - (1/n_batch) * lr * dJdbm 
+                w_mj = w_mj - (1/n_batch) * lr * dJdwmj 
                 
                 L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
                 #J[it] = (1/n_batch) * np.sum(L_i) 
@@ -82,11 +82,6 @@ def gradient_descent(xtrain, ytrain):
 
 J, c_acc, it, wmj, bm, zim, pim = gradient_descent(x_train, y_train) 
 
-#plt.figure(1) 
-#plt.plot(J) 
-
-#plt.figure(2) 
-#plt.plot(c_acc) 
 
 figw, axw = plt.subplots(2, 5, figsize = (10,10)) 
   

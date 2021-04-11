@@ -27,34 +27,35 @@ def gradient_descent(xtrain, ytrain, lr, maxit):
 
     it = 0 
     
-        while it != maxit:
-                z_im = xtrain @ w_mj.T + b_m 
+    while it != maxit: 
 
-                y_im = ytrain 
+        z_im = xtrain @ w_mj.T + b_m 
 
-                z_im_norm = z_im - np.max(z_im, axis = 1, keepdims = True) 
+        y_im = ytrain 
 
-                p_im = np.exp(z_im_norm) / np.sum(np.exp(z_im_norm), axis = 1, keepdims = True) 
+        z_im_norm = z_im - np.max(z_im, axis = 1, keepdims = True) 
 
-                dJdzim = (1/n) * (y_im * p_im - y_im) 
+        p_im = np.exp(z_im_norm) / np.sum(np.exp(z_im_norm), axis = 1, keepdims = True) 
 
-                dJdbm = np.sum(dJdzim, axis = 0) 
-                dJdwmj = dJdzim.T @ xtrain 
+        dJdzim = (y_im * p_im - y_im) 
+
+        dJdbm = np.sum(dJdzim, axis = 0) 
+        dJdwmj = dJdzim.T @ xtrain 
                 
-                b_m = b_m - lr * dJdbm 
-                w_mj = w_mj - lr * dJdwmj 
+        b_m = b_m - (1/n) * lr * dJdbm 
+        w_mj = w_mj - (1/n) * lr * dJdwmj 
                 
-                L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
-                J[it] = (1/n) * np.sum(L_i) 
+        L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
+        J[it] = (1/n) * np.sum(L_i) 
 
-                ypred = np.argmax(p_im, axis = 1) 
-                c_acc[it] = np.array([1 for i in range(0,n) if ypred[i] == ytrue[i]]).sum()
+        ypred = np.argmax(p_im, axis = 1) 
+        c_acc[it] = np.array([1 for i in range(0,n) if ypred[i] == ytrue[i]]).sum() 
                 
-                it += 1 
+        it += 1 
 
     return J, c_acc * (1/n), it, w_mj, b_m , z_im, p_im
 
-J, c_acc, it, wmj, bm, zim, pim = gradient_descent(x_train, y_train, 0.05, 2000) 
+J, c_acc, it, wmj, bm, zim, pim = gradient_descent(x_train, y_train, 0.05, 500) 
 
 plt.figure(1)
 plt.plot(J) 
