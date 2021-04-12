@@ -11,6 +11,10 @@ p = x_train.shape[1] # number of input pixels - 784 (flattened 28x28 image)
 n_batch = 64 # batch size 
 epochs = 500 # epochs 
 
+def predict_test(): 
+    
+    return None
+
 def gradient_descent(xtrain, ytrain): 
 
     #w_mj = np.random.normal(size = (M, p)) # weight matrix 
@@ -67,6 +71,7 @@ def gradient_descent(xtrain, ytrain):
                 b_m = b_m - (1/n_batch) * lr * dJdbm 
                 w_mj = w_mj - (1/n_batch) * lr * dJdwmj 
 
+                ### TO-DO: fix loss/cost and accuracy calculations ### 
                 L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
                 #J[it] = (1/n_batch) * np.sum(L_i) 
                 J.append((1/n_batch) * np.sum(L_i))

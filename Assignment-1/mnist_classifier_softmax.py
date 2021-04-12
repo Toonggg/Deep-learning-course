@@ -13,10 +13,9 @@ M = 10
 n = x_train.shape[0] # number of training examples - 60000 
 p = x_train.shape[1] # number of input pixels - 784 (flattened 28x28 image) 
 
-def predict(): 
+def predict_test(): 
 
     return None
-
 
 def gradient_descent(xtrain, ytrain, lr, maxit): 
 
@@ -25,7 +24,7 @@ def gradient_descent(xtrain, ytrain, lr, maxit):
     b_m = np.zeros(shape = (1, M)) # offset vector 
     z_im = np.zeros(shape = (n, M)) # model in (n x M) 
     dJdbm = np.zeros(shape = (1, M))
-    dJdwmj = np.zeros(shape = (M, p))
+    dJdwmj = np.zeros(shape = (M, p)) 
 
     J = np.zeros(shape = (maxit, 1)) # cost vector 
     c_acc = np.zeros(shape = (maxit, 1)) # classifcation accuracy 
@@ -58,10 +57,11 @@ def gradient_descent(xtrain, ytrain, lr, maxit):
                 
         it += 1 
 
-    return J, c_acc * (1/n), it, w_mj, b_m , z_im, p_im
+    return J, c_acc * (1/n), it, w_mj, b_m , z_im, p_im 
 
-J, c_acc, it, wmj, bm, zim, pim = gradient_descent(x_train, y_train, 0.02, 5000) 
+J, c_acc, it, wmj, bm, zim, pim = gradient_descent(x_train, y_train, 0.02, 500) 
 
+### Cost, accuracy, and weights for training data 
 plt.figure(1) 
 plt.plot(J) 
 
@@ -90,4 +90,6 @@ axw[1,3].imshow(wmj[8, :].reshape(28,28), cmap = 'gray')
 
 axw[1,4].imshow(wmj[9, :].reshape(28,28), cmap = 'gray') 
 
-plt.show()  
+### Cost, accuracy, predicted results for test data 
+
+plt.show()
