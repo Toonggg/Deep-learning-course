@@ -65,24 +65,24 @@ plt.plot(c_acc)
 
 figw, axw = plt.subplots(2, 5, figsize = (10,10)) 
   
-axw[0,0].imshow(wmj[0, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[0,0].imshow(wmj[0, :].reshape(28,28), cmap = 'gray') 
 
-axw[0,1].imshow(wmj[1, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[0,1].imshow(wmj[1, :].reshape(28,28), cmap = 'gray') 
 
-axw[0,2].imshow(wmj[2, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[0,2].imshow(wmj[2, :].reshape(28,28), cmap = 'gray') 
 
-axw[0,3].imshow(wmj[3, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[0,3].imshow(wmj[3, :].reshape(28,28), cmap = 'gray') 
 
-axw[0,4].imshow(wmj[4, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[0,4].imshow(wmj[4, :].reshape(28,28), cmap = 'gray') 
 
-axw[1,0].imshow(wmj[5, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[1,0].imshow(wmj[5, :].reshape(28,28), cmap = 'gray') 
 
-axw[1,1].imshow(wmj[6, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[1,1].imshow(wmj[6, :].reshape(28,28), cmap = 'gray') 
 
-axw[1,2].imshow(wmj[7, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[1,2].imshow(wmj[7, :].reshape(28,28), cmap = 'gray') 
 
-axw[1,3].imshow(wmj[8, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[1,3].imshow(wmj[8, :].reshape(28,28), cmap = 'gray') 
 
-axw[1,4].imshow(wmj[9, :].reshape(28,28), vmin = 0, vmax = 1, cmap = 'gray') 
+axw[1,4].imshow(wmj[9, :].reshape(28,28), cmap = 'gray') 
 
 plt.show()  
