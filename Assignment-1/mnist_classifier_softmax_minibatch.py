@@ -67,16 +67,13 @@ def gradient_descent(xtrain, ytrain):
                 b_m = b_m - (1/n_batch) * lr * dJdbm 
                 w_mj = w_mj - (1/n_batch) * lr * dJdwmj 
 
-                if e == epochs - 1: 
-                    L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
-                    #J[it] = (1/n_batch) * np.sum(L_i) 
-                    J.append((1/n_batch) * np.sum(L_i))
+                L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
+                #J[it] = (1/n_batch) * np.sum(L_i) 
+                J.append((1/n_batch) * np.sum(L_i))
 
-                    ypred = np.argmax(p_im, axis = 1) 
-                    #c_acc[it] = np.array([1 for i in range(0,n_batch) if ypred[i] == ytrue_shuff[j]]).sum() 
-                    c_acc.append(((1/n_batch) * np.array([1 for i in range(0,n_batch) if ypred[i] == ytrue_shuff[j]]).sum())) 
-
-                #print("sum p_im: ", np.sum(p_im, axis = 1)) 
+                ypred = np.argmax(p_im, axis = 1) 
+                #c_acc[it] = np.array([1 for i in range(0,n_batch) if ypred[i] == ytrue_shuff[j]]).sum() 
+                c_acc.append((1/n_batch) * np.sum(ypred == ytrue_shuff[mini_batch]))
                 
                 it += 1 
 
