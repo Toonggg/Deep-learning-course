@@ -9,9 +9,10 @@ n_train = x_train.shape[0] # number of training examples - 60000
 p = x_train.shape[1] # number of input pixels - 784 (flattened 28x28 image) 
 
 n_test = x_test.shape[0] # number of testing examples - 10000 
+ytrue_test = np.argmax(y_test, axis = 1) 
 
 n_batch = 64 # batch size 
-epochs = 1000 # epochs 
+epochs = 300 # epochs 
 
 def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, nb, lr_init, tau, n_train, n_test): 
 
@@ -68,22 +69,34 @@ def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, nb, lr_init, tau, n_train
             b_m = b_m - (1/nb) * lr * dJdbm 
             w_mj = w_mj - (1/nb) * lr * dJdwmj 
 
-            # Cost and accuracy for training data 
-            L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
-            ypred = np.argmax(p_im, axis = 1) 
+            # Only plot data final 
+            if e_p == epochs - 1: 
+                # Cost and accuracy for training data 
+                L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
+                ypred = np.argmax(p_im, axis = 1) 
 
-            J_train.append((1/nb) * np.sum(L_i)) 
-            acc_train.append((1/nb) * np.sum(ypred == ytrue_shuff[mini_batch])) 
+                J_train.append((1/nb) * np.sum(L_i)) 
+                acc_train.append((1/nb) * np.sum(ypred == ytrue_shuff[mini_batch])) 
 
-            # Cost and accuracy for testing data 
-                
+                # Cost and accuracy for testing data 
+                z_test = xtest @ w_mj.T + b_m 
+                z_test_norm = z_test - np.max(z_test, axis = 1, keepdims = True) 
+                p_test = np.exp(z_test_norm) / np.sum(np.exp(z_test_norm), axis = 1, keepdims = True) 
+
+                L_i_test = np.sum(y_test * np.log(np.sum(np.exp(z_test_norm), axis = 1, keepdims = True)) - y_test * z_test_norm, axis = 1) 
+                ypred_test = np.argmax(p_test, axis = 1) 
+
+                J_test.append((1/n_test) * np.sum(L_i_test)) 
+                acc_test = (1/n_test) * np.sum(ypred_test == ytrue_test)
+
             it += 1 
+            print("Epoch: (%s/%s), iteration: %s" % (e_p + 1, epochs, it)) 
 
         e_p += 1 
 
-    return J_train, acc_train, J_test, acc_test, it, w_mj, b_m , z_im, p_im 
+    return J_train, acc_train * 100, J_test, acc_test, it, w_mj, b_m , z_im, p_im 
 
-Jtrain, acc_train, Jtest, acc_test, it, wmj, bm, zim, pim = softmax_gd_minibatch(x_train, y_train, x_test, y_test, 0.3, 1000//2, n_batch, n_train, n_test) 
+Jtrain, acc_train, Jtest, acc_test, it, wmj, bm, zim, pim = softmax_gd_minibatch(x_train, y_train, x_test, y_test, n_batch, 0.1, 300, n_train, n_test) 
 
 #wmj /= np.max(wmj) 
 
@@ -91,7 +104,12 @@ plt.figure(1)
 plt.plot(Jtrain) 
 
 plt.figure(2) 
+plt.plot(Jtest) 
+
+plt.figure(3) 
 plt.plot(acc_train) 
+
+print("Final test accuracy: %s" % acc_test)
 
 plot_hist = False 
 if plot_hist == True: 
