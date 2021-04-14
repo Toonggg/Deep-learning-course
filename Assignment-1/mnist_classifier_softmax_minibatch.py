@@ -65,12 +65,12 @@ def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, nb, lr_init, tau, n_train
 
             p_im = np.exp(z_im_norm) / np.sum(np.exp(z_im_norm), axis = 1, keepdims = True) 
 
-            dJdzim = (y_im * p_im - y_im) 
+            dJdzim = (1/nb) * (y_im * p_im - y_im) 
             dJdbm = np.sum(dJdzim, axis = 0) 
             dJdwmj = dJdzim.T @ xt[mini_batch, :] 
                 
-            b_m = b_m - (1/nb) * lr * dJdbm 
-            w_mj = w_mj - (1/nb) * lr * dJdwmj 
+            b_m = b_m - lr * dJdbm 
+            w_mj = w_mj - lr * dJdwmj 
 
             # Cost and accuracy for training data 
             L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 

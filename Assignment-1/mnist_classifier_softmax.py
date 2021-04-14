@@ -28,11 +28,16 @@ def predict_test(wmj, bm, xtest, ytest):
 
 def softmax_gd(xtrain, ytrain, xtest, ytest, n_train, n_test, lr, maxit): 
 
-    w_mj = np.random.normal(scale = 0.01, size = (M, p)) # weight matrix                                                                                                                                                                                                                                 
+    w_mj = np.random.normal(scale = 0.02, size = (M, p)) # weight matrix                                                                                                                                                                                                                                  
     b_m = np.zeros(shape = (1, M)) # offset vector 
     z_im = np.zeros(shape = (n_train, M)) # model in (n x M) 
     dJdbm = np.zeros(shape = (1, M)) 
     dJdwmj = np.zeros(shape = (M, p)) 
+
+    dJdwmj_check = np.zeros(shape = (maxit, M, p)) 
+    dJdbm_check = np.zeros(shape = (maxit, M)) 
+
+    bm_check = np.zeros(shape = (maxit, M)) 
 
     J = np.zeros(shape = (maxit, 1)) # cost vector 
     acc_train = np.zeros(shape = (maxit, 1)) # classifcation accuracy 
@@ -52,18 +57,23 @@ def softmax_gd(xtrain, ytrain, xtest, ytest, n_train, n_test, lr, maxit):
 
         p_im = np.exp(z_im_norm) / np.sum(np.exp(z_im_norm), axis = 1, keepdims = True) 
 
-        dJdzim = (y_im * p_im - y_im) 
+        dJdzim = (1/n_train) * (y_im * p_im - y_im) 
 
         dJdbm = np.sum(dJdzim, axis = 0) 
         dJdwmj = dJdzim.T @ xtrain 
-                
-        b_m = b_m - (1/n_train) * lr * dJdbm 
-        w_mj = w_mj - (1/n_train) * lr * dJdwmj
+
+        dJdwmj_check[it, :, :] = dJdwmj
+        dJdbm_check[it] = dJdbm
+
+        b_m = b_m - lr * dJdbm 
+        w_mj = w_mj - lr * dJdwmj 
+
+        bm_check[it] = b_m
 
         # Cost and accuracy for training mini-batch 
         L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
         J[it] = (1/n_train) * np.sum(L_i) 
-
+        
         ypred_train = np.argmax(p_im, axis = 1) 
         ytrue_train = np.argmax(y_train, axis = 1) 
         acc_train[it] = np.array([1 for i in range(0,n_train) if ypred_train[i] == ytrue_train[i]]).sum() 
@@ -83,14 +93,15 @@ def softmax_gd(xtrain, ytrain, xtest, ytest, n_train, n_test, lr, maxit):
         it += 1 
         print("Iteration: (%s/%s)" % (it, maxit)) 
 
-    return J, acc_train * (1/n_train) * 100, J_test, acc_test * (1/n_test) * 100, it, w_mj, b_m , z_im, p_im 
+    return J, acc_train * (1/n_train) * 100, J_test, acc_test * (1/n_test) * 100, it, w_mj, b_m , z_im, p_im, dJdwmj_check, dJdbm_check, bm_check
 
-J, acc_train, J_test, acc_test, it, wmj, bm, zim, pim = softmax_gd(x_train, y_train, x_test, y_test, n_train, n_test, 0.03, 3000) 
+J, acc_train, J_test, acc_test, it, wmj, bm, zim, pim, djwmjcheck , djdbmcheck, bmcheck = softmax_gd(x_train, y_train, x_test, y_test, n_train, n_test, 0.01, 3000) 
 
 plt.figure(1) 
 plt_J, = plt.plot(J, 'r') 
 plt_J_test, = plt.plot(J_test, 'b') 
 plt.legend([plt_J, plt_J_test], ['Train cost', 'Test cost'])
+######## plt.annotate("Final cost J: "+str(J_all[len(J_all) - 1]), xy = (150,300))
 plt.xlabel('Number of iterations') 
 plt.ylabel('Cost J') 
 plt.title('Cost versus iterations') 
@@ -106,6 +117,17 @@ plt.ylabel('Accuracy in %%')
 plt.title('Accuracy versus iterations') 
 print("Final train accuracy: %s%%" % float(acc_train[-1])) 
 print("Final test accuracy: %s%%" % float(acc_test[-1])) 
+
+plt.figure(3)
+djdwm = np.mean(djwmjcheck, axis = 2)
+plt.plot(djdwm)
+
+plt.figure(4)
+plt.plot(djdbmcheck)
+
+plt.figure(5)
+plt.plot(bmcheck)
+
 
 figw, axw = plt.subplots(2, 5, figsize = (8,8)) 
 axw[0,0].imshow(wmj[0, :].reshape(28,28), cmap = 'gray') 
