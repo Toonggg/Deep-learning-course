@@ -28,10 +28,10 @@ def predict_test(wmj, bm, xtest, ytest):
 
 def softmax_gd(xtrain, ytrain, xtest, ytest, n_train, n_test, lr, maxit): 
 
-    w_mj = np.random.rand(M, p) # weight matrix                                                                                                                                                                                                                                    
+    w_mj = np.random.normal(scale = 0.01, size = (M, p)) # weight matrix                                                                                                                                                                                                                                 
     b_m = np.zeros(shape = (1, M)) # offset vector 
     z_im = np.zeros(shape = (n_train, M)) # model in (n x M) 
-    dJdbm = np.zeros(shape = (1, M))
+    dJdbm = np.zeros(shape = (1, M)) 
     dJdwmj = np.zeros(shape = (M, p)) 
 
     J = np.zeros(shape = (maxit, 1)) # cost vector 
@@ -70,7 +70,7 @@ def softmax_gd(xtrain, ytrain, xtest, ytest, n_train, n_test, lr, maxit):
 
         # Cost and accuracy for testing data 
         z_test = xtest @ w_mj.T + b_m 
-        z_test_norm = z_test - np.max(z_test, axis = 1, keepdims = True)
+        z_test_norm = z_test - np.max(z_test, axis = 1, keepdims = True) 
         L_i_test = np.sum(ytest * np.log(np.sum(np.exp(z_test_norm), axis = 1, keepdims = True)) - ytest * z_test_norm, axis = 1) 
         J_test[it] = (1/n_test) * np.sum(L_i_test) 
 
@@ -81,13 +81,11 @@ def softmax_gd(xtrain, ytrain, xtest, ytest, n_train, n_test, lr, maxit):
         acc_test[it] = np.array([1 for i in range(0,n_test) if ypred_test[i] == ytrue_test[i]]).sum() 
   
         it += 1 
-        print("Iteration: (%s/%s)" % (it, maxit))  
+        print("Iteration: (%s/%s)" % (it, maxit)) 
 
     return J, acc_train * (1/n_train) * 100, J_test, acc_test * (1/n_test) * 100, it, w_mj, b_m , z_im, p_im 
 
-J, acc_train, J_test, acc_test, it, wmj, bm, zim, pim = softmax_gd(x_train, y_train, x_test, y_test, n_train, n_test, 0.02, 3000) 
-
-#wmj /= np.max(wmj) # rescale weights by maximum for visualization 
+J, acc_train, J_test, acc_test, it, wmj, bm, zim, pim = softmax_gd(x_train, y_train, x_test, y_test, n_train, n_test, 0.03, 3000) 
 
 plt.figure(1) 
 plt_J, = plt.plot(J, 'r') 
@@ -115,7 +113,7 @@ axw[0,0].set_title('0')
 axw[0,1].imshow(wmj[1, :].reshape(28,28), cmap = 'gray') 
 axw[0,1].set_title('1')
 axw[0,2].imshow(wmj[2, :].reshape(28,28), cmap = 'gray') 
-axw[0,2].set_title('2')
+axw[0,2].set_title('2') 
 axw[0,3].imshow(wmj[3, :].reshape(28,28), cmap = 'gray') 
 axw[0,3].set_title('3')
 axw[0,4].imshow(wmj[4, :].reshape(28,28), cmap = 'gray') 

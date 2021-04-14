@@ -2,6 +2,8 @@ import numpy as np
 from load_mnist import load_mnist 
 from matplotlib import pyplot as plt 
 
+batch_gen = np.random.default_rng()
+
 x_train, y_train, x_test, y_test = load_mnist()
 
 M = 10 
@@ -12,11 +14,11 @@ n_test = x_test.shape[0] # number of testing examples - 10000
 ytrue_test = np.argmax(y_test, axis = 1) 
 
 n_batch = 64 # batch size 
-epochs = 300 # epochs 
+epochs = 1000 # epochs 
 
 def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, nb, lr_init, tau, n_train, n_test): 
 
-    w_mj = np.random.rand(M, p) 
+    w_mj = np.random.normal(scale = 0.01, size = (M, p)) # weight matrix 
                                                                                                                                                                                                                           
     b_m = np.zeros(shape = (1, M)) 
     z_im = np.zeros(shape = (n_train, M)) 
@@ -53,6 +55,7 @@ def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, nb, lr_init, tau, n_train
             lr = (1 - (it/t_tau)) * lr0 + (it/t_tau) * lrt 
 
             mini_batch = np.random.randint(0, n_train, size = nb) # batch indices 
+            #mini_batch = batch_gen.choice(n_train, size = nb, replace = False) # batch indices with replacement
 
             z_im[mini_batch, :] = xt[mini_batch, :] @ w_mj.T + b_m 
 
@@ -69,25 +72,23 @@ def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, nb, lr_init, tau, n_train
             b_m = b_m - (1/nb) * lr * dJdbm 
             w_mj = w_mj - (1/nb) * lr * dJdwmj 
 
-            # Only plot data final 
-            if e_p == epochs - 1: 
-                # Cost and accuracy for training data 
-                L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
-                ypred = np.argmax(p_im, axis = 1) 
+            # Cost and accuracy for training data 
+            L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
+            ypred = np.argmax(p_im, axis = 1) 
 
-                J_train.append((1/nb) * np.sum(L_i)) 
-                acc_train.append((1/nb) * np.sum(ypred == ytrue_shuff[mini_batch])) 
+            J_train.append((1/nb) * np.sum(L_i)) 
+            acc_train.append((1/nb) * np.sum(ypred == ytrue_shuff[mini_batch])) 
 
-                # Cost and accuracy for testing data 
-                z_test = xtest @ w_mj.T + b_m 
-                z_test_norm = z_test - np.max(z_test, axis = 1, keepdims = True) 
-                p_test = np.exp(z_test_norm) / np.sum(np.exp(z_test_norm), axis = 1, keepdims = True) 
+            # Cost and accuracy for testing data 
+            z_test = xtest @ w_mj.T + b_m 
+            z_test_norm = z_test - np.max(z_test, axis = 1, keepdims = True) 
+            p_test = np.exp(z_test_norm) / np.sum(np.exp(z_test_norm), axis = 1, keepdims = True) 
 
-                L_i_test = np.sum(y_test * np.log(np.sum(np.exp(z_test_norm), axis = 1, keepdims = True)) - y_test * z_test_norm, axis = 1) 
-                ypred_test = np.argmax(p_test, axis = 1) 
+            L_i_test = np.sum(y_test * np.log(np.sum(np.exp(z_test_norm), axis = 1, keepdims = True)) - y_test * z_test_norm, axis = 1) 
+            ypred_test = np.argmax(p_test, axis = 1) 
 
-                J_test.append((1/n_test) * np.sum(L_i_test)) 
-                acc_test = (1/n_test) * np.sum(ypred_test == ytrue_test)
+            J_test.append((1/n_test) * np.sum(L_i_test)) 
+            acc_test = (1/n_test) * np.sum(ypred_test == ytrue_test) 
 
             it += 1 
             print("Epoch: (%s/%s), iteration: %s" % (e_p + 1, epochs, it)) 
@@ -96,11 +97,11 @@ def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, nb, lr_init, tau, n_train
 
     return J_train, acc_train * 100, J_test, acc_test, it, w_mj, b_m , z_im, p_im 
 
-Jtrain, acc_train, Jtest, acc_test, it, wmj, bm, zim, pim = softmax_gd_minibatch(x_train, y_train, x_test, y_test, n_batch, 0.1, 300, n_train, n_test) 
+Jtrain, acc_train, Jtest, acc_test, it, wmj, bm, zim, pim = softmax_gd_minibatch(x_train, y_train, x_test, y_test, n_batch, 0.01, 1000, n_train, n_test) 
 
 #wmj /= np.max(wmj) 
 
-plt.figure(1)
+plt.figure(1) 
 plt.plot(Jtrain) 
 
 plt.figure(2) 
@@ -109,9 +110,9 @@ plt.plot(Jtest)
 plt.figure(3) 
 plt.plot(acc_train) 
 
-print("Final test accuracy: %s" % acc_test)
+print("Final test accuracy: %s" % acc_test) 
 
-plot_hist = False 
+plot_hist = True 
 if plot_hist == True: 
     plt.hist(wmj[0, :]) 
     plt.hist(wmj[1, :]) 
