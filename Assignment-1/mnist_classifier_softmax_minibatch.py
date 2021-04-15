@@ -13,8 +13,8 @@ p = x_train.shape[1] # number of input pixels - 784 (flattened 28x28 image)
 n_test = x_test.shape[0] # number of testing examples - 10000 
 ytrue_test = np.argmax(y_test, axis = 1) 
 
-n_batch = 64 # batch size 
-epochs = 200 # epochs 
+n_batch = 2048 # batch size 
+epochs = 1000 # epochs 
 
 def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, nb, lr_init, tau, n_train, n_test, k): 
 
@@ -52,7 +52,7 @@ def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, nb, lr_init, tau, n_train
         Jtrainaccum = []
         acctrainaccum = []
         Jtestaccum = [] 
-        acctestaccum = []
+        acctestaccum = [] 
     
         for j in range(n_train//nb): 
 
@@ -111,26 +111,26 @@ def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, nb, lr_init, tau, n_train
 
     return J_train, 100 * acc_train, J_test, 100 * acc_test, it, w_mj, b_m , z_im, p_im 
 
-Jtrain, acc_train, Jtest, acc_test, it, wmj, bm, zim, pim = softmax_gd_minibatch(x_train, y_train, x_test, y_test, n_batch, 0.03, 200, n_train, n_test, 3) 
+Jtrain, acc_train, Jtest, acc_test, it, wmj, bm, zim, pim = softmax_gd_minibatch(x_train, y_train, x_test, y_test, n_batch, 0.001, 100, n_train, n_test, 2) 
 
 plt.figure(1) 
 plt_J, = plt.plot(Jtrain, 'r') 
 plt_J_test, = plt.plot(Jtest, 'b') 
 plt.legend([plt_J, plt_J_test], ['Train cost', 'Test cost'])
-plt.annotate("Final train cost: %s and final test cost: %s" % (float(Jtrain[-1]), float(Jtest[-1])), xy = (epochs//2,85))
+plt.annotate("Final train cost: %s and final test cost: %s" % (float(Jtrain[-1]), float(Jtest[-1])), xy = (epochs//2,1))
 plt.xlabel('Number of epochs') 
 plt.ylabel('Cost J') 
 plt.title('Cost versus iterations') 
 print("Final train cost: %s" % float(Jtrain[-1]))
-print("Final test cost: %s" % float(Jtest[-1]))
+print("Final test cost: %s" % float(Jtest[-1])) 
 
 plt.figure(2)
 plt_acc_train, = plt.plot(acc_train, 'r') 
 plt_acc_test, = plt.plot(acc_test, 'b') 
 plt.legend([plt_acc_train, plt_acc_test], ['Train accuracy', 'Test accuracy']) 
-plt.annotate("Final train accuracy: %s and final test accuracy: %s" % (float(acc_train[-1]), float(acc_test[-1])), xy = (epochs//2,85))
+plt.annotate("Final train accuracy: %s and final test accuracy: %s" % (float(acc_train[-1]), float(acc_test[-1])), xy = (epochs//2,1))
 plt.xlabel('Number of iterations') 
-plt.ylabel('Accuracy in %%') 
+plt.ylabel('Accuracy in %') 
 plt.title('Accuracy versus iterations') 
 print("Final train accuracy: %s%%" % float(acc_train[-1])) 
 print("Final test accuracy: %s%%" % float(acc_test[-1])) 
