@@ -12,11 +12,16 @@ n_test = x_test.shape[0]
 
 def softmax_gd(xtrain, ytrain, xtest, ytest, n_train, n_test, lr, maxit): 
 
-    w_mj = np.random.normal(scale = 0.02, size = (M, p)) # weight matrix                                                                                                                                                                                                                                  
+    w_mj = np.random.normal(scale = 0.01, size = (M, p)) # weight matrix                                                                                                                                                                                                                                  
     b_m = np.zeros(shape = (1, M)) # offset vector 
     z_im = np.zeros(shape = (n_train, M)) # model in (n x M) 
     dJdbm = np.zeros(shape = (1, M)) 
-    dJdwmj = np.zeros(shape = (M, p))
+    dJdwmj = np.zeros(shape = (M, p)) 
+
+    dJdwmj_check = np.zeros(shape = (maxit, M, p)) 
+    dJdbm_check = np.zeros(shape = (maxit, M)) 
+
+    bm_check = np.zeros(shape = (maxit, M)) 
 
     J = np.zeros(shape = (maxit, 1)) # cost vector 
     acc_train = np.zeros(shape = (maxit, 1)) # classifcation accuracy 
@@ -42,7 +47,11 @@ def softmax_gd(xtrain, ytrain, xtest, ytest, n_train, n_test, lr, maxit):
         dJdwmj = dJdzim.T @ xtrain 
 
         b_m = b_m - lr * dJdbm 
-        w_mj = w_mj - lr * dJdwmj
+        w_mj = w_mj - lr * dJdwmj 
+
+        dJdwmj_check[it, :, :] = dJdwmj 
+        dJdbm_check[it] = dJdbm
+        bm_check[it] = b_m
 
         # Cost and accuracy for training mini-batch 
         L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
@@ -67,56 +76,62 @@ def softmax_gd(xtrain, ytrain, xtest, ytest, n_train, n_test, lr, maxit):
         it += 1 
         print("Iteration: (%s/%s)" % (it, maxit)) 
 
-    return J, acc_train * (1/n_train) * 100, J_test, acc_test * (1/n_test) * 100, it, w_mj, b_m , z_im, p_im 
+    return J, acc_train * (1/n_train) * 100, J_test, acc_test * (1/n_test) * 100, it, w_mj, b_m , z_im, p_im, dJdwmj_check, dJdbm_check, bm_check
 
-lr = 0.01
-iters = 2000  
-
-J, acc_train, J_test, acc_test, it, wmj, bm, zim, pim = softmax_gd(x_train, y_train, x_test, y_test, n_train, n_test, lr, iters) 
+J, acc_train, J_test, acc_test, it, wmj, bm, zim, pim, djwmjcheck , djdbmcheck, bmcheck = softmax_gd(x_train, y_train, x_test, y_test, n_train, n_test, 0.05, 1000) 
 
 plt.figure(1) 
 plt_J, = plt.plot(J, 'r') 
 plt_J_test, = plt.plot(J_test, 'b') 
 plt.legend([plt_J, plt_J_test], ['Train cost', 'Test cost'])
-plt.annotate("Final train cost: %s" % (float(J[-1])), xycoords = 'figure fraction',xy = (0.4,0.5)) 
-plt.annotate("Final test cost: %s" % (float(J_test[-1])), xycoords = 'figure fraction',xy = (0.4,0.55)) 
+plt.annotate("Final train cost: %s and final test cost: %s" % (float(J[-1]), float(J_test[-1])), xy = (150,300))
 plt.xlabel('Number of iterations') 
 plt.ylabel('Cost J') 
 plt.title('Cost versus iterations') 
-print("Final train cost: %s" % float(J[-1])) 
+print("Final train cost: %s" % float(J[-1]))
 print("Final test cost: %s" % float(J_test[-1]))
 
 plt.figure(2)
 plt_acc_train, = plt.plot(acc_train, 'r') 
 plt_acc_test, = plt.plot(acc_test, 'b') 
 plt.legend([plt_acc_train, plt_acc_test], ['Train accuracy', 'Test accuracy']) 
-plt.annotate("Final train accuracy: %s%%" % (float(acc_train[-1])), xycoords = 'figure fraction',xy = (0.4,0.5)) 
-plt.annotate("Final test accuracy: %s%%" % (float(acc_test[-1])), xycoords = 'figure fraction',xy = (0.4,0.55)) 
+plt.annotate("Final train accuracy: %s and final test accuracy: %s" % (float(acc_train[-1]), float(acc_test[-1])), xy = (150,300))
 plt.xlabel('Number of iterations') 
 plt.ylabel('Accuracy in %') 
 plt.title('Accuracy versus iterations') 
 print("Final train accuracy: %s%%" % float(acc_train[-1])) 
 print("Final test accuracy: %s%%" % float(acc_test[-1])) 
 
+plt.figure(3)
+djdwm = np.mean(djwmjcheck, axis = 2)
+plt.plot(djdwm)
+
+plt.figure(4)
+plt.plot(djdbmcheck)
+
+plt.figure(5)
+plt.plot(bmcheck)
+
+
 figw, axw = plt.subplots(2, 5, figsize = (8,8)) 
 axw[0,0].imshow(wmj[0, :].reshape(28,28), cmap = 'gray') 
 axw[0,0].set_title('0') 
 axw[0,1].imshow(wmj[1, :].reshape(28,28), cmap = 'gray') 
-axw[0,1].set_title('1') 
+axw[0,1].set_title('1')
 axw[0,2].imshow(wmj[2, :].reshape(28,28), cmap = 'gray') 
 axw[0,2].set_title('2') 
 axw[0,3].imshow(wmj[3, :].reshape(28,28), cmap = 'gray') 
-axw[0,3].set_title('3') 
+axw[0,3].set_title('3')
 axw[0,4].imshow(wmj[4, :].reshape(28,28), cmap = 'gray') 
 axw[0,4].set_title('4') 
 axw[1,0].imshow(wmj[5, :].reshape(28,28), cmap = 'gray') 
-axw[1,0].set_title('5') 
+axw[1,0].set_title('5')
 axw[1,1].imshow(wmj[6, :].reshape(28,28), cmap = 'gray') 
-axw[1,1].set_title('6') 
+axw[1,1].set_title('6')
 axw[1,2].imshow(wmj[7, :].reshape(28,28), cmap = 'gray') 
-axw[1,2].set_title('7') 
+axw[1,2].set_title('7')
 axw[1,3].imshow(wmj[8, :].reshape(28,28), cmap = 'gray') 
-axw[1,3].set_title('8') 
+axw[1,3].set_title('8')
 axw[1,4].imshow(wmj[9, :].reshape(28,28), cmap = 'gray') 
 axw[1,4].set_title('9') 
 
