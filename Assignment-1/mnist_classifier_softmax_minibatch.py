@@ -140,11 +140,11 @@ def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, ep, nb, lr_init, tau, n_t
 
     return J_train, 100 * acc_train, J_test, 100 * acc_test, Jtrainiter, Jtestniter, 100 * acctrainiter, 100 * acctestiter, it, w_mj, b_m , z_im, p_im 
 
-n_batch = 500 # batch size 
+n_batch = 1000 # batch size 
 epochs = 50 # epochs 
 lr0 = 0.01 # initial learning rate 
 tau_it = 100 # decay 
-k_plot = 2 # storing accuracy/cost values each k-th iteration 
+k_plot = 1 # storing accuracy/cost values each k-th iteration 
 
 Jtrain, acc_train, Jtest, acc_test, J_trainiter, J_testniter, acc_trainiter, acc_testiter, it, wmj, bm, zim, pim = softmax_gd_minibatch(x_train, y_train, x_test, y_test, epochs, n_batch, lr0, tau_it, n_train, n_test, k_plot) 
 
@@ -178,17 +178,25 @@ plt.figure(3)
 plt_Jtrain_it, = plt.plot(J_trainiter, 'r') 
 plt_Jtest_it, = plt.plot(J_testniter, 'b') 
 plt.legend([plt_Jtrain_it, plt_Jtest_it], ['Train cost', 'Test cost']) 
+plt.annotate("Final train cost: %s" % (float(J_trainiter[-1])), xycoords = 'figure fraction', xy = (0.4,0.5))
+plt.annotate("Final test cost: %s" % (float(J_testniter[-1])), xycoords = 'figure fraction', xy = (0.4,0.55))
 plt.xlabel('Total number of iterations') 
 plt.ylabel('Cost J') 
 plt.title('Cost versus iterations') 
+print("Final train cost: %s" % float(J_trainiter[-1])) 
+print("Final test cost: %s" % float(J_testniter[-1]))   
 
 plt.figure(4)
 plt_acc_train_it, = plt.plot(acc_trainiter, 'r') 
 plt_acc_test_it, = plt.plot(acc_testiter, 'b') 
 plt.legend([plt_acc_train_it, plt_acc_test_it], ['Train accuracy', 'Test accuracy']) 
+plt.annotate("Final train accuracy: %s%%" % (float(acc_trainiter[-1])), xycoords = 'figure fraction', xy = (0.4,0.5))
+plt.annotate("Final test accuracy: %s%%" % (float(acc_testiter[-1])), xycoords = 'figure fraction', xy = (0.4,0.55))
 plt.xlabel('Total number of iterations') 
 plt.ylabel('Accuracy in %') 
 plt.title('Accuracy versus iterations') 
+print("Final train accuracy: %s%%" % float(acc_trainiter[-1])) 
+print("Final test accuracy: %s%%" % float(acc_testiter[-1])) 
 
 figw, axw = plt.subplots(2, 5, figsize = (10,10)) 
     
