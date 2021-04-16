@@ -69,8 +69,8 @@ def softmax_gd(xtrain, ytrain, xtest, ytest, n_train, n_test, lr, maxit):
 
     return J, acc_train * (1/n_train) * 100, J_test, acc_test * (1/n_test) * 100, it, w_mj, b_m , z_im, p_im 
 
-lr = 0.01
-iters = 2000  
+lr = 0.01 
+iters = 2000 
 
 J, acc_train, J_test, acc_test, it, wmj, bm, zim, pim = softmax_gd(x_train, y_train, x_test, y_test, n_train, n_test, lr, iters) 
 
