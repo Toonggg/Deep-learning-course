@@ -82,25 +82,23 @@ def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, ep, nb, lr_init, tau, n_t
             w_mj = w_mj - lr * dJdwmj 
 
             # Calculate the cost and accuracy every k-th iteration 
-            if it % k == 0: 
-                #Cost and accuracy for training data 
-                L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
-                ypred = np.argmax(p_im, axis = 1) 
+            #if it % k == 0: 
+            #Cost and accuracy for training data 
+            L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
+            ypred = np.argmax(p_im, axis = 1) 
 
-                Jtrainaccum.append((1/nb) * np.sum(L_i)) 
-                acctrainaccum.append((1/nb) * np.sum(ypred == ytrue_shuff[mini_batch])) 
+            Jtrainaccum.append((1/nb) * np.sum(L_i)) 
+            acctrainaccum.append((1/nb) * np.sum(ypred == ytrue_shuff[mini_batch])) 
 
-                # Cost and accuracy for testing data 
-                z_test = xtest @ w_mj.T + b_m 
-                z_test_norm = z_test - np.max(z_test, axis = 1, keepdims = True) 
-                p_test = np.exp(z_test_norm) / np.sum(np.exp(z_test_norm), axis = 1, keepdims = True) 
-                L_i_test = np.sum(y_test * np.log(np.sum(np.exp(z_test_norm), axis = 1, keepdims = True)) - y_test * z_test_norm, axis = 1) 
-                ypred_test = np.argmax(p_test, axis = 1) 
+            # Cost and accuracy for testing data 
+            z_test = xtest @ w_mj.T + b_m 
+            z_test_norm = z_test - np.max(z_test, axis = 1, keepdims = True) 
+            p_test = np.exp(z_test_norm) / np.sum(np.exp(z_test_norm), axis = 1, keepdims = True) 
+            L_i_test = np.sum(y_test * np.log(np.sum(np.exp(z_test_norm), axis = 1, keepdims = True)) - y_test * z_test_norm, axis = 1) 
+            ypred_test = np.argmax(p_test, axis = 1) 
 
-                Jtestaccum.append((1/n_test) * np.sum(L_i_test)) 
-                acctestaccum.append((1/n_test) * np.sum(ypred_test == ytrue_test)) 
-
-            it += 1 
+            Jtestaccum.append((1/n_test) * np.sum(L_i_test)) 
+            acctestaccum.append((1/n_test) * np.sum(ypred_test == ytrue_test)) 
 
              # Calculate the cost and accuracy every k-th iteration and accumulate over all epochs 
             if tot_it % k == 0: 
@@ -127,12 +125,13 @@ def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, ep, nb, lr_init, tau, n_t
             Jtestaccum_av = np.mean(Jtestaccum) 
             acctestaccum_av = np.mean(acctestaccum)
 
+            it += 1 
             tot_it += 1 
 
             print("Epoch: (%s/%s), iteration: %s" % (e_p + 1, ep, it)) 
 
         J_train[e_p] = Jtrainaccum_av 
-        acc_train[e_p] = acctrainaccum_av
+        acc_train[e_p] = acctrainaccum_av 
         J_test[e_p] = Jtestaccum_av 
         acc_test[e_p] = acctestaccum_av 
 
@@ -144,7 +143,7 @@ n_batch = 1000 # batch size
 epochs = 50 # epochs 
 lr0 = 0.01 # initial learning rate 
 tau_it = 100 # decay 
-k_plot = 1 # storing accuracy/cost values each k-th iteration 
+k_plot = 2 # storing accuracy/cost values each k-th iteration 
 
 Jtrain, acc_train, Jtest, acc_test, J_trainiter, J_testniter, acc_trainiter, acc_testiter, it, wmj, bm, zim, pim = softmax_gd_minibatch(x_train, y_train, x_test, y_test, epochs, n_batch, lr0, tau_it, n_train, n_test, k_plot) 
 
