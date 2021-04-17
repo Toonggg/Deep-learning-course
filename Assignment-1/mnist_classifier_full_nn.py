@@ -37,20 +37,19 @@ ytrue_test = np.argmax(y_test, axis = 1)
 
 W = np.zeros(shape = (L - 1, ))
 
-def init_params():
+def init_params(n, M, p, n_hidden):
 
     W1 = np.random.normal(scale = 0.01, size = (n_hidden[0], p)) 
     W2 = np.random.normal(scale = 0.01, size = (n_hidden[1], n_hidden[0])) 
     W3 = np.random.normal(scale = 0.01, size = (n_hidden[2], n_hidden[1])) 
     W4 = np.random.normal(scale = 0.01, size = (M, n_hidden[2])) 
 
+    b1 = np.zeros(shape = (n_hidden[0], 1))
+    b2 = np.zeros(shape = (n_hidden[1], 1))
+    b3 = np.zeros(shape = (n_hidden[2], 1))
+    b4 = np.zeros(shape = (M)) 
 
-
-    w_mj = np.random.normal(scale = 0.01, size = (M, p)) # weight matrix                                                                                                                                                                                            
-    b_m = np.zeros(shape = (1, M)) 
     z_im = np.zeros(shape = (n_train, M)) 
-
-    Q = np.zeros(shape = (n_batch, ))
 
     dJdbm = np.zeros(shape = (1, M)) 
     dJdwmj = np.zeros(shape = (M, p)) 
