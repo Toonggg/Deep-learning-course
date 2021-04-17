@@ -21,26 +21,31 @@ def sigmoid_deriv(x):
 
     return sigmoid(x) * (1-sigmoid(x))
 
-# We set these for now 
-L = 5 # number of layers - excluding input layer 
-n_hidden = np.array([500, 300, 150, 75]) # hidden units per layer - U_L 
-
-M = 10 
+M = 10 # number of classes/ digits 
 p = x_train.shape[1] # number of input pixels - 784 (flattened 28x28 image) 
 
 n_train = x_train.shape[0] # number of training examples - 60000 
 n_test = x_test.shape[0] # number of testing examples - 10000 
+
+L = 4 # number of layers - input, h1, h2, h3, out 
+n_hidden = np.array([392, 196, 98]) # hidden units per layer 
 
 n_batch = 100 # batch size 
 epochs = 300 # number of epochs 
 
 ytrue_test = np.argmax(y_test, axis = 1) 
 
+W = np.zeros(shape = (L - 1, ))
+
 def init_params():
 
+    W1 = np.random.normal(scale = 0.01, size = (n_hidden[0], p)) 
+    W2 = np.random.normal(scale = 0.01, size = (n_hidden[1], n_hidden[0])) 
+    W3 = np.random.normal(scale = 0.01, size = (n_hidden[2], n_hidden[1])) 
+    W4 = np.random.normal(scale = 0.01, size = (M, n_hidden[2])) 
 
-    for l in np.arange(0, L, 1):
-        W[l] = np.zeros()
+
+
     w_mj = np.random.normal(scale = 0.01, size = (M, p)) # weight matrix                                                                                                                                                                                            
     b_m = np.zeros(shape = (1, M)) 
     z_im = np.zeros(shape = (n_train, M)) 
