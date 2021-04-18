@@ -10,7 +10,7 @@ def relu(x):
 
 def sigmoid(x): 
 
-    return (np.exp(x)) / (1 + np.exp(x))
+    return (np.exp(x)) / (1 + np.exp(x)) 
 
 def relu_deriv(x):
 
@@ -40,14 +40,15 @@ def init_params(M, p, n_hidden):
     b1 = np.zeros(shape = (n_hidden[0], 1)) 
     b2 = np.zeros(shape = (n_hidden[1], 1)) 
     b3 = np.zeros(shape = (n_hidden[2], 1)) 
-    b4 = np.zeros(shape = (M, 1))
+    b4 = np.zeros(shape = (M, 1)) 
 
     return W1, b1, W2, b2, W3, b3, W4, b4
 
 def calc_cost(nb, mini_batch, y_L, z_L): 
 
-    loss = np.sum(y_L[mini_batch, :] * np.log(np.sum(np.exp(z_L), axis = 1, keepdims = True)) - y_L[mini_batch, :] * z_L, axis = 1, keepdims = True)
-    cost = (1/nb) * np.sum(loss, axis = 0, keepdims = True)
+    z_L_norm = z_L - np.max(z_L, axis = 1, keepdims = True) 
+    loss = np.sum(y_L[mini_batch, :] * np.log(np.sum(np.exp(z_L_norm), axis = 1, keepdims = True)) - y_L[mini_batch, :] * z_L_norm, axis = 1, keepdims = True)
+    cost = (1/nb) * np.sum(loss, axis = 0, keepdims = True) 
 
     dz_L = - y_L[mini_batch, :] + softmax(z_L)
 
@@ -94,7 +95,7 @@ p = x_train.shape[1] # number of input pixels - 784 (flattened 28x28 image)
 n_train = x_train.shape[0] # number of training examples - 60000 
 n_test = x_test.shape[0] # number of testing examples - 10000 
 
-n_batch = 100 # batch size 
+n_batch = 1500 # batch size 
 epochs = 10 # number of epochs 
 
 def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest): 
@@ -102,13 +103,13 @@ def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest):
     ytrue_test = np.argmax(ytest, axis = 1) # labels for testing data
 
     e_p = 0 # epoch counter 
-    lr0 = 0.01 # initial learning rate 
+    lr0 = 0.5 # initial learning rate 
     lrt = 0.01 * lr0 # final learning rate 
-    t_tau = 50 # iterations until learning rate is set to constant lrt value 
+    t_tau = 30 # iterations until learning rate is set to constant lrt value 
 
     tot_it = 0 # total iteration counter 
 
-    n_hidden = np.array([392, 196, 98]) # hidden units per layer ---> L - 1 hidden layers 
+    n_hidden = np.array([20, 20, 20]) # hidden units per layer ---> L - 1 hidden layers 
     w1,b1,w2,b2,w3,b3,w4,b4 = init_params(M, p , n_hidden) 
 
     while e_p != epochs: 
@@ -137,21 +138,22 @@ def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest):
 
             w1 = w1 - lr * dw1
             w2 = w2 - lr * dw2 
-            w3 = w3 - lr * dw3
+            w3 = w3 - lr * dw3 
             w4 = w4 - lr * dw4 
 
-            b1 = b1 - lr * db1
+            b1 = b1 - lr * db1 
             b2 = b2 - lr * db2
-            b3 = b3 - lr * db3
+            b3 = b3 - lr * db3 
             b4 = b4 - lr * db4
 
             tot_it += 1 
             it += 1 
 
-            print("Epoch: (%s/%s), iteration: %s" % (e_p + 1, epochs, it)) 
+            #print("Epoch: (%s/%s), iteration: %s" % (e_p + 1, epochs, it)) 
+            print("Cost: ", cost) 
 
         e_p += 1 
 
-    return w4 
+    return w1,w2,w3,w4,b1,b2,b3,b4, sz
 
-w444 = neural_network(epochs, n_batch, M, p, x_train, y_train, x_test, y_test) 
+w1,w2,w3,w4,b1,b2,b3,b4,sz = neural_network(epochs, n_batch, M, p, x_train, y_train, x_test, y_test) 
