@@ -89,6 +89,39 @@ def backward(q1,q2,q3, z1, z2, z3, dzl, w2, w3, w4, xt, mb):
 
     return dW_1, db_1.T, dW_2, db_2.T, dW_3, db_3.T, dW_4, db_4.T
 
+def init_params_2(M, p, n_hidden): 
+
+    W1 = np.random.normal(scale = 0.01, size = (n_hidden[0], p)) 
+    W2 = np.random.normal(scale = 0.01, size = (M, n_hidden[0])) 
+
+    b1 = np.zeros(shape = (n_hidden[0], 1)) 
+    b2 = np.zeros(shape = (M, 1)) 
+
+    return W1, b1, W2, b2
+
+def backward_2(q1, z1, w1, xt, mb, dzl):
+
+    dW_2 = (1/n_batch) * dzl.T @ q1
+
+    db_2 = (1/n_batch) * np.sum(dzl, axis = 0, keepdims = True)
+
+    dz_1 = np.multiply(q1, relu_deriv(z1))
+
+    dW_1 = (1/n_batch) * dz_1.T @ xt[mb, :] 
+
+    db_1 = (1/n_batch) * np.sum(dz_1, axis = 0, keepdims = True)
+
+    return dW_1, db_1.T, dW_2, db_2.T
+
+def forward_2(xt, mb, w1, b1, w2, b2):
+
+    z_1 = xt[mb, :] @ w1.T + b1.T 
+    q_1 = relu(z_1) 
+    z = q_1 @ w2.T + b2.T 
+    softmax_z = softmax(z) 
+
+    return z_1, q_1, z, softmax_z
+
 M = 10 # number of classes/ digits 
 p = x_train.shape[1] # number of input pixels - 784 (flattened 28x28 image) 
 
@@ -96,21 +129,23 @@ n_train = x_train.shape[0] # number of training examples - 60000
 n_test = x_test.shape[0] # number of testing examples - 10000 
 
 n_batch = 1500 # batch size 
-epochs = 10 # number of epochs 
+epochs = 3 # number of epochs 
 
 def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest): 
 
     ytrue_test = np.argmax(ytest, axis = 1) # labels for testing data
 
     e_p = 0 # epoch counter 
-    lr0 = 0.5 # initial learning rate 
+    lr0 = 0.1 # initial learning rate 
     lrt = 0.01 * lr0 # final learning rate 
     t_tau = 30 # iterations until learning rate is set to constant lrt value 
 
     tot_it = 0 # total iteration counter 
 
-    n_hidden = np.array([20, 20, 20]) # hidden units per layer ---> L - 1 hidden layers 
-    w1,b1,w2,b2,w3,b3,w4,b4 = init_params(M, p , n_hidden) 
+    #n_hidden = np.array([200, 200, 200]) # hidden units per layer ---> L - 1 hidden layers 
+    n_hidden = np.array([200]) # hidden units per layer ---> L - 1 hidden layers 
+    #w1,b1,w2,b2,w3,b3,w4,b4 = init_params(M, p , n_hidden) 
+    w1,b1,w2,b2 = init_params_2(M, p , n_hidden) 
 
     while e_p != epochs: 
 
@@ -132,19 +167,21 @@ def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest):
             lr = (1 - (it/t_tau)) * lr0 + (it/t_tau) * lrt 
             mini_batch = np.random.randint(0, n_train, size = nb) # batch indices 
 
-            z1, q1, z2, q2, z3, q3, z, sz = forward(xt, mini_batch, w1,b1,w2,b2,w3,b3,w4,b4)
+            #z1, q1, z2, q2, z3, q3, z, sz = forward(xt, mini_batch, w1,b1,w2,b2,w3,b3,w4,b4)
+            z1, q1, z, sz = forward_2(xt, mini_batch, w1,b1,w2,b2)
             cost, dzL = calc_cost(nb, mini_batch, yt, z) 
-            dw1, db1, dw2, db2, dw3, db3, dw4, db4 = backward(q1, q2, q3, z1, z2, z3, dzL, w2, w3, w4, xt, mini_batch) 
+            #dw1, db1, dw2, db2, dw3, db3, dw4, db4 = backward(q1, q2, q3, z1, z2, z3, dzL, w2, w3, w4, xt, mini_batch) 
+            dw1, db1, dw2, db2 = backward_2(q1, z1, w1, xt, mini_batch, dzL) 
 
-            w1 = w1 - lr * dw1
+            w1 = w1 - lr * dw1 
             w2 = w2 - lr * dw2 
-            w3 = w3 - lr * dw3 
-            w4 = w4 - lr * dw4 
+            #w3 = w3 - lr * dw3 
+            #w4 = w4 - lr * dw4 
 
             b1 = b1 - lr * db1 
             b2 = b2 - lr * db2
-            b3 = b3 - lr * db3 
-            b4 = b4 - lr * db4
+            #b3 = b3 - lr * db3 
+            #b4 = b4 - lr * db4
 
             tot_it += 1 
             it += 1 
@@ -154,6 +191,7 @@ def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest):
 
         e_p += 1 
 
-    return w1,w2,w3,w4,b1,b2,b3,b4, sz
+    #return w1,w2,w3,w4,b1,b2,b3,b4, sz
+    return w1,w2, sz
 
-w1,w2,w3,w4,b1,b2,b3,b4,sz = neural_network(epochs, n_batch, M, p, x_train, y_train, x_test, y_test) 
+w1,w2,sz = neural_network(epochs, n_batch, M, p, x_train, y_train, x_test, y_test) 
