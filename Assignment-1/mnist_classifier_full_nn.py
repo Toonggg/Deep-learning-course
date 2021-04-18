@@ -50,7 +50,7 @@ def calc_cost(nb, mini_batch, y_L, z_L):
     loss = np.sum(y_L[mini_batch, :] * np.log(np.sum(np.exp(z_L), axis = 1, keepdims = True)) - y_L[mini_batch, :] * z_L, axis = 1, keepdims = True)
     cost = (1/nb) * np.sum(loss, axis = 0, keepdims = True) 
 
-    dz_L = - y_L[mini_batch, :] + softmax(z_L)
+    dz_L = - y_L[mini_batch, :] + softmax(z_L) 
 
     return cost, dz_L
 
@@ -99,13 +99,13 @@ def init_params_2(M, p, n_hidden):
 
     return W1, b1, W2, b2
 
-def backward_2(q1, z1, w1, xt, mb, dzl):
+def backward_2(q1, z1, w1, w2, xt, mb, dzl):
+    dq_1 = dzl @ w2
+    dz_1 = np.multiply(dq_1, relu_deriv(z1))
 
     dW_2 = (1/n_batch) * dzl.T @ q1
 
     db_2 = (1/n_batch) * np.sum(dzl, axis = 0, keepdims = True)
-
-    dz_1 = np.multiply(q1, sigmoid_deriv(z1))
 
     dW_1 = (1/n_batch) * dz_1.T @ xt[mb, :] 
 
@@ -116,7 +116,7 @@ def backward_2(q1, z1, w1, xt, mb, dzl):
 def forward_2(xt, mb, w1, b1, w2, b2):
 
     z_1 = xt[mb, :] @ w1.T + b1.T 
-    q_1 = sigmoid(z_1) 
+    q_1 = relu(z_1) 
     z = q_1 @ w2.T + b2.T 
     softmax_z = softmax(z) 
 
@@ -129,7 +129,7 @@ n_train = x_train.shape[0] # number of training examples - 60000
 n_test = x_test.shape[0] # number of testing examples - 10000 
 
 n_batch = 1500 # batch size 
-epochs = 3 # number of epochs 
+epochs = 15 # number of epochs 
 
 def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest): 
 
@@ -143,7 +143,7 @@ def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest):
     tot_it = 0 # total iteration counter 
 
     #n_hidden = np.array([200, 200, 200]) # hidden units per layer ---> L - 1 hidden layers 
-    n_hidden = np.array([200]) # hidden units per layer ---> L - 1 hidden layers 
+    n_hidden = np.array([100]) # hidden units per layer ---> L - 1 hidden layers 
     #w1,b1,w2,b2,w3,b3,w4,b4 = init_params(M, p , n_hidden) 
     w1,b1,w2,b2 = init_params_2(M, p , n_hidden) 
 
@@ -164,14 +164,15 @@ def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest):
         #for j in range(n_train//nb): 
         while it != n_train//nb: 
 
-            lr = (1 - (it/t_tau)) * lr0 + (it/t_tau) * lrt 
+            #lr = (1 - (it/t_tau)) * lr0 + (it/t_tau) * lrt 
+            lr = 1
             mini_batch = np.random.randint(0, n_train, size = nb) # batch indices 
 
             #z1, q1, z2, q2, z3, q3, z, sz = forward(xt, mini_batch, w1,b1,w2,b2,w3,b3,w4,b4)
             z1, q1, z, sz = forward_2(xt, mini_batch, w1,b1,w2,b2)
             cost, dzL = calc_cost(nb, mini_batch, yt, z) 
             #dw1, db1, dw2, db2, dw3, db3, dw4, db4 = backward(q1, q2, q3, z1, z2, z3, dzL, w2, w3, w4, xt, mini_batch) 
-            dw1, db1, dw2, db2 = backward_2(q1, z1, w1, xt, mini_batch, dzL) 
+            dw1, db1, dw2, db2 = backward_2(q1, z1, w1, w2, xt, mini_batch, dzL) 
 
             w1 = w1 - lr * dw1 
             w2 = w2 - lr * dw2 
@@ -179,7 +180,6 @@ def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest):
             #w4 = w4 - lr * dw4 
 
             b1 = b1 - lr * db1 
-            print(dw2)
             b2 = b2 - lr * db2
             #print(b1) 
             #print() 
@@ -191,7 +191,7 @@ def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest):
             it += 1 
 
             #print("Epoch: (%s/%s), iteration: %s" % (e_p + 1, epochs, it)) 
-            #print("Cost: ", cost) 
+            print("Cost: ", cost) 
 
         e_p += 1 
 
