@@ -46,8 +46,8 @@ def init_params(M, p, n_hidden):
 
 def calc_cost(nb, mini_batch, y_L, z_L): 
 
-    z_L_norm = z_L - np.max(z_L, axis = 1, keepdims = True) 
-    loss = np.sum(y_L[mini_batch, :] * np.log(np.sum(np.exp(z_L_norm), axis = 1, keepdims = True)) - y_L[mini_batch, :] * z_L_norm, axis = 1, keepdims = True)
+    #z_L_norm = z_L - np.max(z_L, axis = 1, keepdims = True) 
+    loss = np.sum(y_L[mini_batch, :] * np.log(np.sum(np.exp(z_L), axis = 1, keepdims = True)) - y_L[mini_batch, :] * z_L, axis = 1, keepdims = True)
     cost = (1/nb) * np.sum(loss, axis = 0, keepdims = True) 
 
     dz_L = - y_L[mini_batch, :] + softmax(z_L)
@@ -105,7 +105,7 @@ def backward_2(q1, z1, w1, xt, mb, dzl):
 
     db_2 = (1/n_batch) * np.sum(dzl, axis = 0, keepdims = True)
 
-    dz_1 = np.multiply(q1, relu_deriv(z1))
+    dz_1 = np.multiply(q1, sigmoid_deriv(z1))
 
     dW_1 = (1/n_batch) * dz_1.T @ xt[mb, :] 
 
@@ -116,7 +116,7 @@ def backward_2(q1, z1, w1, xt, mb, dzl):
 def forward_2(xt, mb, w1, b1, w2, b2):
 
     z_1 = xt[mb, :] @ w1.T + b1.T 
-    q_1 = relu(z_1) 
+    q_1 = sigmoid(z_1) 
     z = q_1 @ w2.T + b2.T 
     softmax_z = softmax(z) 
 
@@ -179,7 +179,11 @@ def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest):
             #w4 = w4 - lr * dw4 
 
             b1 = b1 - lr * db1 
+            print(dw2)
             b2 = b2 - lr * db2
+            #print(b1) 
+            #print() 
+            #print(b2) 
             #b3 = b3 - lr * db3 
             #b4 = b4 - lr * db4
 
@@ -187,7 +191,7 @@ def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest):
             it += 1 
 
             #print("Epoch: (%s/%s), iteration: %s" % (e_p + 1, epochs, it)) 
-            print("Cost: ", cost) 
+            #print("Cost: ", cost) 
 
         e_p += 1 
 
