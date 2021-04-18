@@ -101,7 +101,7 @@ def init_params_2(M, p, n_hidden):
 
 def backward_2(q1, z1, w1, w2, xt, mb, dzl):
     dq_1 = dzl @ w2
-    dz_1 = np.multiply(dq_1, relu_deriv(z1))
+    dz_1 = np.multiply(dq_1, sigmoid_deriv(z1))
 
     dW_2 = (1/n_batch) * dzl.T @ q1
 
@@ -116,7 +116,7 @@ def backward_2(q1, z1, w1, w2, xt, mb, dzl):
 def forward_2(xt, mb, w1, b1, w2, b2):
 
     z_1 = xt[mb, :] @ w1.T + b1.T 
-    q_1 = relu(z_1) 
+    q_1 = sigmoid(z_1) 
     z = q_1 @ w2.T + b2.T 
     softmax_z = softmax(z) 
 
@@ -146,6 +146,10 @@ def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest):
     n_hidden = np.array([100]) # hidden units per layer ---> L - 1 hidden layers 
     #w1,b1,w2,b2,w3,b3,w4,b4 = init_params(M, p , n_hidden) 
     w1,b1,w2,b2 = init_params_2(M, p , n_hidden) 
+
+    total_cost_over_time = []
+    db1_ot = []
+    db2_ot = []
 
     while e_p != epochs: 
 
@@ -189,13 +193,26 @@ def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest):
 
             tot_it += 1 
             it += 1 
-
+            total_cost_over_time.append(cost) 
+            db1_ot.append(db1)
+            db2_ot.append(db2)
             #print("Epoch: (%s/%s), iteration: %s" % (e_p + 1, epochs, it)) 
-            print("Cost: ", cost) 
+            #print("Cost: ", cost) 
 
         e_p += 1 
 
     #return w1,w2,w3,w4,b1,b2,b3,b4, sz
-    return w1,w2, sz
+    return w1,w2, sz, total_cost_over_time, db1_ot, db2_ot
 
-w1,w2,sz = neural_network(epochs, n_batch, M, p, x_train, y_train, x_test, y_test) 
+w1,w2,sz, cost, db1ot, db2ot = neural_network(epochs, n_batch, M, p, x_train, y_train, x_test, y_test) 
+
+plt.figure(1)
+plt.plot(np.array(cost).reshape(-1))
+
+plt.figure(2)
+plt.plot(np.array(db1ot).reshape(-1))
+
+plt.figure(3)
+plt.plot(np.array(db2ot).reshape(-1))
+
+plt.show()
