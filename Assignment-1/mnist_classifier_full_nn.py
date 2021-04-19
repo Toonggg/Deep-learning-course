@@ -187,7 +187,7 @@ def neural_network(epochs, nb, M, p, k, xtrain, ytrain, xtest, ytest, ntrain, nt
         while it != n_train//nb: 
 
             #lr = (1 - (it/t_tau)) * lr0 + (it/t_tau) * lrt 
-            lr = 1 
+            lr = 0.5
 
             mini_batch = np.random.randint(0, n_train, size = nb) # batch indices 
  
@@ -231,7 +231,7 @@ def neural_network(epochs, nb, M, p, k, xtrain, ytrain, xtest, ytest, ntrain, nt
 
         e_p += 1 
 
-    return w1,w2,w3,w4,b1,b2,b3,b4, total_cost_over_time, acctrain 
+    return w1,w2,w3,w4,b1,b2,b3,b4, costtrain, acctrain, costtest, acctest
     #return w1,w2, softz, costtrain, acctrain, costtest, acctest 
 
 M = 10 # number of classes/ digits 
@@ -240,13 +240,13 @@ p = x_train.shape[1] # number of input pixels - 784 (flattened 28x28 image)
 n_train = x_train.shape[0] # number of training examples - 60000 
 n_test = x_test.shape[0] # number of testing examples - 10000 
 
-n_batch = 1000 # batch size 
-epochs = 50 # number of epochs 
+n_batch = 1500 # batch size 
+epochs = 30 # number of epochs 
 
-k_acc = 1 
+k_acc = 5
 
 #w1,w2,sz, costtrain, acctrain, costtest, acctest = neural_network(epochs, n_batch, M, p, k_acc, x_train, y_train, x_test, y_test, n_train, n_test) 
-w1,w2,w3,w4,b1,b2,b3,b4, traincost, acctrain, costtest, db1ot, acctest, db2ot, db3ot, db4ot, dw1ot, dw2ot, dw3ot, dw4ot = neural_network(epochs, n_batch, M, p, k_acc, x_train, y_train, x_test, y_test, n_train, n_test)
+w1,w2,w3,w4,b1,b2,b3,b4, costtrain, acctrain, costtest, acctest = neural_network(epochs, n_batch, M, p, k_acc, x_train, y_train, x_test, y_test, n_train, n_test)
 
 plt.figure(1) 
 plt_Jtrain_it, = plt.plot(costtrain, 'r') 
