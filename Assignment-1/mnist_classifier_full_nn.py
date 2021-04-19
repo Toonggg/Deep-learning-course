@@ -136,18 +136,20 @@ def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest):
     ytrue_test = np.argmax(ytest, axis = 1) # labels for testing data
 
     e_p = 0 # epoch counter 
-    lr0 = 0.1 # initial learning rate 
+    lr0 = 0.5 # initial learning rate 
     lrt = 0.01 * lr0 # final learning rate 
     t_tau = 30 # iterations until learning rate is set to constant lrt value 
 
     tot_it = 0 # total iteration counter 
 
     #n_hidden = np.array([200, 200, 200]) # hidden units per layer ---> L - 1 hidden layers 
-    n_hidden = np.array([100]) # hidden units per layer ---> L - 1 hidden layers 
+    n_hidden = np.array([784//2]) # hidden units per layer ---> L - 1 hidden layers 
     #w1,b1,w2,b2,w3,b3,w4,b4 = init_params(M, p , n_hidden) 
     w1,b1,w2,b2 = init_params_2(M, p , n_hidden) 
 
     total_cost_over_time = []
+    dw1_ot = []
+    dw2_ot = []
     db1_ot = []
     db2_ot = []
 
@@ -168,11 +170,11 @@ def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest):
         #for j in range(n_train//nb): 
         while it != n_train//nb: 
 
-            #lr = (1 - (it/t_tau)) * lr0 + (it/t_tau) * lrt 
-            lr = 1
+            lr = (1 - (it/t_tau)) * lr0 + (it/t_tau) * lrt 
+            #lr = 1
             mini_batch = np.random.randint(0, n_train, size = nb) # batch indices 
 
-            #z1, q1, z2, q2, z3, q3, z, sz = forward(xt, mini_batch, w1,b1,w2,b2,w3,b3,w4,b4)
+            #z1, q1, z2, q2, z3, q3, z, sz = forward(xt, mini_batch, w1,b1,w2,b2,w3,b3,w4,b4) 
             z1, q1, z, sz = forward_2(xt, mini_batch, w1,b1,w2,b2)
             cost, dzL = calc_cost(nb, mini_batch, yt, z) 
             #dw1, db1, dw2, db2, dw3, db3, dw4, db4 = backward(q1, q2, q3, z1, z2, z3, dzL, w2, w3, w4, xt, mini_batch) 
@@ -196,15 +198,16 @@ def neural_network(epochs, nb, M, p, xtrain, ytrain, xtest, ytest):
             total_cost_over_time.append(cost) 
             db1_ot.append(db1)
             db2_ot.append(db2)
-            #print("Epoch: (%s/%s), iteration: %s" % (e_p + 1, epochs, it)) 
-            #print("Cost: ", cost) 
+            dw1_ot.append(dw1)
+            dw2_ot.append(dw2)
+            print("Epoch: (%s/%s), iteration: %s" % (e_p + 1, epochs, it)) 
 
         e_p += 1 
 
     #return w1,w2,w3,w4,b1,b2,b3,b4, sz
-    return w1,w2, sz, total_cost_over_time, db1_ot, db2_ot
+    return w1,w2, sz, total_cost_over_time, db1_ot, db2_ot, dw1_ot, dw2_ot
 
-w1,w2,sz, cost, db1ot, db2ot = neural_network(epochs, n_batch, M, p, x_train, y_train, x_test, y_test) 
+w1,w2,sz, cost, db1ot, db2ot, dw1ot, dw2ot = neural_network(epochs, n_batch, M, p, x_train, y_train, x_test, y_test) 
 
 plt.figure(1)
 plt.plot(np.array(cost).reshape(-1))
@@ -214,5 +217,12 @@ plt.plot(np.array(db1ot).reshape(-1))
 
 plt.figure(3)
 plt.plot(np.array(db2ot).reshape(-1))
+
+plt.figure(4)
+plt.plot(np.array(dw1ot).reshape(-1))
+
+plt.figure(5)
+plt.plot(np.array(dw2ot).reshape(-1))
+
 
 plt.show()
