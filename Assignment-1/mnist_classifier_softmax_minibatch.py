@@ -8,12 +8,14 @@ M = 10
 n_train = x_train.shape[0] # number of training examples - 60000 
 p = x_train.shape[1] # number of input pixels - 784 (flattened 28x28 image) 
 
+he_init = np.sqrt((2/p))
+
 n_test = x_test.shape[0] # number of testing examples - 10000 
 ytrue_test = np.argmax(y_test, axis = 1) 
 
 def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, ep, nb, lr_init, tau, n_train, n_test, k): 
 
-    w_mj = np.random.normal(scale = 0.01, size = (M, p)) # weight matrix                                                                                                                                                                                            
+    w_mj = np.random.normal(scale = he_init, size = (M, p)) # weight matrix                                                                                                                                                                                            
     b_m = np.zeros(shape = (1, M)) 
     z_im = np.zeros(shape = (n_train, M)) 
     dJdbm = np.zeros(shape = (1, M)) 

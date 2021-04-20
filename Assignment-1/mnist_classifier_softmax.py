@@ -8,11 +8,13 @@ M = 10
 n_train = x_train.shape[0] # number of training examples - 60000 
 p = x_train.shape[1] # number of input pixels - 784 (flattened 28x28 image) 
 
+he_init = np.sqrt((2/p)) 
+
 n_test = x_test.shape[0]
 
 def softmax_gd(xtrain, ytrain, xtest, ytest, n_train, n_test, lr, maxit): 
 
-    w_mj = np.random.normal(scale = 0.02, size = (M, p)) # weight matrix                                                                                                                                                                                                                                  
+    w_mj = np.random.normal(scale = he_init, size = (M, p)) # weight matrix                                                                                                                                                                                                                                  
     b_m = np.zeros(shape = (1, M)) # offset vector 
     z_im = np.zeros(shape = (n_train, M)) # model in (n x M) 
     dJdbm = np.zeros(shape = (1, M)) 

@@ -32,10 +32,10 @@ def softmax(x):
 
 def init_params(M, p, n_hidden): 
 
-    W1 = np.random.normal(scale = 0.01, size = (n_hidden[0], p)) 
-    W2 = np.random.normal(scale = 0.01, size = (n_hidden[1], n_hidden[0])) 
-    W3 = np.random.normal(scale = 0.01, size = (n_hidden[2], n_hidden[1])) 
-    W4 = np.random.normal(scale = 0.01, size = (M, n_hidden[2])) 
+    W1 = np.random.normal(scale = he_init, size = (n_hidden[0], p)) 
+    W2 = np.random.normal(scale = he_init, size = (n_hidden[1], n_hidden[0])) 
+    W3 = np.random.normal(scale = he_init, size = (n_hidden[2], n_hidden[1])) 
+    W4 = np.random.normal(scale = he_init, size = (M, n_hidden[2])) 
 
     b1 = np.zeros(shape = (n_hidden[0], 1)) 
     b2 = np.zeros(shape = (n_hidden[1], 1)) 
@@ -90,7 +90,7 @@ def backward(q1,q2,q3, z1, z2, z3, dzl, w2, w3, w4, xt, mb):
     dq_2 = dz_3 @ w3
 
     dz_2 = np.multiply(dq_2, relu_deriv(z2)) 
-    dq_1 = dz_2 @ w2
+    dq_1 = dz_2 @ w2 
     
     dz_1 = np.multiply(dq_1, relu_deriv(z1))   
 
@@ -108,8 +108,8 @@ def backward(q1,q2,q3, z1, z2, z3, dzl, w2, w3, w4, xt, mb):
 
 def init_params_2(M, p, n_hidden): 
 
-    W1 = np.random.normal(scale = 0.01, size = (n_hidden[0], p)) 
-    W2 = np.random.normal(scale = 0.01, size = (M, n_hidden[0])) 
+    W1 = np.random.normal(scale = he_init, size = (n_hidden[0], p)) 
+    W2 = np.random.normal(scale = he_init, size = (M, n_hidden[0])) 
 
     b1 = np.zeros(shape = (n_hidden[0], 1)) 
     b2 = np.zeros(shape = (M, 1)) 
@@ -243,6 +243,8 @@ n_test = x_test.shape[0] # number of testing examples - 10000
 
 n_batch = 1500 # batch size 
 epochs = 50 # number of epochs 
+
+he_init = np.sqrt((2/p))
 
 k_acc = 5
 
