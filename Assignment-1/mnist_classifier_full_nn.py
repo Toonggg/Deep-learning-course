@@ -42,7 +42,7 @@ def init_params(M, p, n_hidden):
     b3 = np.zeros(shape = (n_hidden[2], 1)) 
     b4 = np.zeros(shape = (M, 1)) 
 
-    return W1, b1, W2, b2, W3, b3, W4, b4
+    return W1, b1, W2, b2, W3, b3, W4, b4 
 
 def calc_cost(nb, mini_batch, batchBool, y_L, z_L, sz): 
     if batchBool == True:
