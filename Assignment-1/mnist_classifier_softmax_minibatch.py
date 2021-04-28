@@ -83,8 +83,7 @@ def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, ep, nb, lr_init, tau, n_t
             # Calculate the cost and accuracy every k-th iteration for averaging per epoch 
             if it % k == 0: 
                 #Cost and accuracy for training data 
-                #L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
-                L_i = np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - np.sum(y_im * z_im_norm, axis = 1) 
+                L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
                 ypred = np.argmax(p_im, axis = 1) 
 
                 Jtrainaccum.append((1/nb) * np.sum(L_i)) 
@@ -94,8 +93,7 @@ def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, ep, nb, lr_init, tau, n_t
                 z_test = xtest @ w_mj.T + b_m 
                 z_test_norm = z_test - np.max(z_test, axis = 1, keepdims = True) 
                 p_test = np.exp(z_test_norm) / np.sum(np.exp(z_test_norm), axis = 1, keepdims = True) 
-                #L_i_test = np.sum(y_test * np.log(np.sum(np.exp(z_test_norm), axis = 1, keepdims = True)) - y_test * z_test_norm, axis = 1) 
-                L_i_test = np.log(np.sum(np.exp(z_test_norm), axis = 1, keepdims = True)) - np.sum(ytest * z_test_norm, axis = 1) 
+                L_i_test = np.sum(y_test * np.log(np.sum(np.exp(z_test_norm), axis = 1, keepdims = True)) - y_test * z_test_norm, axis = 1) 
                 ypred_test = np.argmax(p_test, axis = 1) 
 
                 Jtestaccum.append((1/n_test) * np.sum(L_i_test)) 
@@ -104,8 +102,7 @@ def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, ep, nb, lr_init, tau, n_t
              # Calculate the cost and accuracy every k-th iteration and accumulate over all epochs 
             if tot_it % k == 0: 
                 #Cost and accuracy for training data 
-                #L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
-                L_i = np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - np.sum(y_im * z_im_norm, axis = 1) 
+                L_i = np.sum(y_im * np.log(np.sum(np.exp(z_im_norm), axis = 1, keepdims = True)) - y_im * z_im_norm, axis = 1) 
                 ypred = np.argmax(p_im, axis = 1) 
                 if nb == n_train:
                     Jtrainiter = []
@@ -119,8 +116,7 @@ def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, ep, nb, lr_init, tau, n_t
                 z_test = xtest @ w_mj.T + b_m 
                 z_test_norm = z_test - np.max(z_test, axis = 1, keepdims = True) 
                 p_test = np.exp(z_test_norm) / np.sum(np.exp(z_test_norm), axis = 1, keepdims = True) 
-                #L_i_test = np.sum(y_test * np.log(np.sum(np.exp(z_test_norm), axis = 1, keepdims = True)) - y_test * z_test_norm, axis = 1) 
-                L_i_test = np.log(np.sum(np.exp(z_test_norm), axis = 1, keepdims = True)) - np.sum(ytest * z_test_norm, axis = 1) 
+                L_i_test = np.sum(y_test * np.log(np.sum(np.exp(z_test_norm), axis = 1, keepdims = True)) - y_test * z_test_norm, axis = 1) 
                 ypred_test = np.argmax(p_test, axis = 1) 
                 if nb == n_train:
                     Jtestniter = []

@@ -13,7 +13,7 @@ def load_mnist():
     test_labels = []    
 
     for label in range(NUM_LABELS): 
-        for image_path in glob.glob("/Users/tongyou/Desktop/Deep-learning-course/Assignment-1/MNIST/Test/" + str(label) + "/*.png"): 
+        for image_path in glob.glob('**/MNIST/Test/' + str(label) + '/*.png', recursive=True): 
             image = imageio.imread(image_path)
             test_images.append(image)
             letter = [0 for _ in range(0,NUM_LABELS)] 
@@ -25,7 +25,7 @@ def load_mnist():
     train_labels = [] 
     
     for label in range(NUM_LABELS):
-        for image_path in glob.glob("/Users/tongyou/Desktop/Deep-learning-course/Assignment-1/MNIST/Train/" + str(label) + "/*.png"): 
+        for image_path in glob.glob('**/MNIST/Train/' + str(label) + '/*.png', recursive=True): 
             image = imageio.imread(image_path)
             train_images.append(image)
             letter = [0 for _ in range(0,NUM_LABELS)] 
