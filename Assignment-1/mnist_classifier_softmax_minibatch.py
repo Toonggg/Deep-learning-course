@@ -149,9 +149,9 @@ def softmax_gd_minibatch(xtrain, ytrain, xtest, ytest, ep, nb, lr_init, tau, n_t
 
     return J_train, 100 * acc_train, J_test, 100 * acc_test, Jtrainiter, Jtestniter, 100 * acctrainiter, 100 * acctestiter, it, w_mj, b_m , z_im, p_im 
 
-n_batch = 1500 # batch size ---> 30 iterations per epoch 
+n_batch = 100 # batch size ---> 30 iterations per epoch 
 epochs = 300 # epochs 
-lr0 = 0.01 # initial learning rate 
+lr0 = 0.5 # initial learning rate 
 tau_it = (n_train//n_batch) - 5 # decay 
 k_plot = 5 # storing accuracy/cost values each k-th iteration 
 

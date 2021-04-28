@@ -19,7 +19,7 @@ def relu_deriv(x):
 
     return x
 
-def sigmoid_deriv(x):
+def sigmoid_deriv(x): 
 
     return sigmoid(x) * (1-sigmoid(x))
 
@@ -51,7 +51,7 @@ def calc_cost(nb, mini_batch, batchBool, y_L, z_L, sz):
         cost = (1/nb) * np.sum(loss, axis = 0, keepdims = True) 
 
         dz_L = - y_L[mini_batch, :] + sz 
-        return cost, dz_L
+        return cost, dz_L 
     else:
         z_L_norm = z_L - np.max(z_L, axis = 1, keepdims = True) 
         loss = np.sum(y_L * np.log(np.sum(np.exp(z_L_norm), axis = 1, keepdims = True)) - y_L * z_L_norm, axis = 1, keepdims = True)
