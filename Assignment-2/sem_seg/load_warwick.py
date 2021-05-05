@@ -3,9 +3,8 @@ import imageio
 import glob
 
 def load_warwick():
-    # Loads the MNIST dataset from png images
  
-    NUM_LABELS = 10        
+    NUM_LABELS = 10 
     # create list of image objects
     test_images = []
     test_labels = []

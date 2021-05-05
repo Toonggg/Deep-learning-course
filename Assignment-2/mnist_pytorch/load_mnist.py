@@ -7,7 +7,7 @@ def load_mnist():
  
     NUM_LABELS = 10        
     # create list of image objects
-    test_images = []
+    test_images = [] 
     test_labels = []    
 
     for label in range(NUM_LABELS):
@@ -16,7 +16,7 @@ def load_mnist():
             image = imageio.imread(image_path) 
             test_images.append(image)
             letter = [0 for _ in range(0,NUM_LABELS)] 
-            letter[label] = 1
+            letter[label] = 1 
             test_labels.append(letter)  
             
     # create list of image objects 
@@ -29,7 +29,7 @@ def load_mnist():
             image = imageio.imread(image_path)
             train_images.append(image)
             letter = [0 for _ in range(0,NUM_LABELS)] 
-            letter[label] = 1
+            letter[label] = 1 
             train_labels.append(letter)                  
             
     X_train= np.array(train_images).reshape(-1,784)/255.0

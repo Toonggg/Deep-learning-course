@@ -246,7 +246,7 @@ epochs = 50 # number of epochs
 
 he_init = np.sqrt((2/p))
 
-k_acc = 5
+k_acc = 5 
 
 w1,w2,sz, costtrain, acctrain, costtest, acctest = neural_network(epochs, n_batch, M, p, k_acc, x_train, y_train, x_test, y_test, n_train, n_test) 
 #w1,w2,w3,w4,b1,b2,b3,b4, costtrain, acctrain, costtest, acctest = neural_network(epochs, n_batch, M, p, k_acc, x_train, y_train, x_test, y_test, n_train, n_test)
