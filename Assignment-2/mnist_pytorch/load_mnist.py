@@ -11,12 +11,11 @@ def load_mnist():
     test_labels = []    
 
     for label in range(NUM_LABELS):
-        #for image_path in glob.glob('**/MNIST/Test/' + str(label) + '/*.png', recursive=True): 
-        for image_path in glob.glob('/scratch/fhgfs/tong/Deep-learning-course/Assignment-2/mnist_pytorch/MNIST/Test/' + str(label) + '/*.png'): 
+        for image_path in glob.glob('**/MNIST/Test/' + str(label) + '/*.png', recursive=True): 
             image = imageio.imread(image_path) 
             test_images.append(image)
             letter = [0 for _ in range(0,NUM_LABELS)] 
-            letter[label] = 1 
+            letter[label] = 1  
             test_labels.append(letter)  
             
     # create list of image objects 
@@ -24,8 +23,7 @@ def load_mnist():
     train_labels = [] 
     
     for label in range(NUM_LABELS):
-        #for image_path in glob.glob('**/MNIST/Train/' + str(label) + '/*.png', recursive=True): 
-        for image_path in glob.glob('/scratch/fhgfs/tong/Deep-learning-course/Assignment-2/mnist_pytorch/MNIST/Train/' + str(label) + '/*.png'): 
+        for image_path in glob.glob('**/MNIST/Train/' + str(label) + '/*.png', recursive=True): 
             image = imageio.imread(image_path)
             train_images.append(image)
             letter = [0 for _ in range(0,NUM_LABELS)] 

@@ -1,39 +1,34 @@
-import numpy as np
 import imageio
-import glob
+import glob 
+import numpy as np
 
 def load_warwick():
- 
-    NUM_LABELS = 10 
-    # create list of image objects
+    
+    # Loading raw WARWICK training and testing images and labels  
+    train_images = [] 
+    train_labels = []
     test_images = []
     test_labels = []
+        
+    for image_path in sorted(glob.glob('**/WARWICK/Train/' + '/image_*.png', recursive=True)): 
+        image = imageio.imread(image_path) 
+        train_images.append(image) 
+        
+    for image_path in sorted(glob.glob('**/WARWICK/Train/' + '/label_*.png', recursive=True)):
+        image = imageio.imread(image_path) 
+        train_labels.append(image)     
 
-    for label in range(NUM_LABELS):
-        #for image_path in glob.glob('**/MNIST/Test/' + str(label) + '/*.png', recursive=True): 
-        for image_path in glob.glob('/scratch/fhgfs/tong/Deep-learning-course/Assignment-2/mnist_pytorch/MNIST/Test/' + str(label) + '/*.png'): 
-            image = imageio.imread(image_path) 
-            test_images.append(image)
-            letter = [0 for _ in range(0,NUM_LABELS)] 
-            letter[label] = 1
-            test_labels.append(letter)  
-            
-    # create list of image objects 
-    train_images = [] 
-    train_labels = [] 
-    
-    for label in range(NUM_LABELS):
-        #for image_path in glob.glob('**/MNIST/Train/' + str(label) + '/*.png', recursive=True): 
-        for image_path in glob.glob('/scratch/fhgfs/tong/Deep-learning-course/Assignment-2/mnist_pytorch/MNIST/Train/' + str(label) + '/*.png'): 
-            image = imageio.imread(image_path)
-            train_images.append(image)
-            letter = [0 for _ in range(0,NUM_LABELS)] 
-            letter[label] = 1
-            train_labels.append(letter)                  
-            
-    X_train= np.array(train_images).reshape(-1,784)/255.0
-    Y_train= np.array(train_labels)
-    X_test= np.array(test_images).reshape(-1,784)/255.0
-    Y_test= np.array(test_labels)
-    
-    return X_train, Y_train, X_test, Y_test
+    for image_path in sorted(glob.glob('**/WARWICK/Test/' + '/image_*.png', recursive=True)):
+        image = imageio.imread(image_path) 
+        test_images.append(image)     
+        
+    for image_path in sorted(glob.glob('**/WARWICK/Test/' + '/label_*.png', recursive=True)):
+        image = imageio.imread(image_path) 
+        test_labels.append(image) 
+        
+    xtrain = np.array(train_images)
+    ytrain = np.array(train_labels)
+    xtest = np.array(test_images)
+    ytest = np.array(test_labels) 
+        
+    return xtrain, ytrain, xtest, ytest 
